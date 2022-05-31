@@ -7,35 +7,36 @@ import {
 } from "react";
 import { useDictionary } from "../hooks/useDictionary";
 import { useSolution } from "../hooks/useSolution";
+import { useNotification } from "./NotificationContext";
 
 interface IGameContext {
   status: string | null;
   guessList: string[];
   letters: string;
   activeRow: number;
-  changeStatus: (newStatus: string) => void;
-  addNewGuess: (guess: string) => void;
   handleKeyUp: (e: KeyboardEvent) => void;
 }
 
 // game context with initial properties
-const GameContext = createContext<IGameContext>({
-  status: "playing",
-  guessList: [],
-  letters: "",
-  activeRow: 0,
-  changeStatus: () => {},
-  addNewGuess: () => {},
-  handleKeyUp: () => {},
-});
+const GameContext = createContext<IGameContext | undefined>(undefined);
 
 // custom hook to access game context properties
-export const useGameContext = () => useContext(GameContext);
+export const useGameContext = () => {
+  const context = useContext(GameContext);
+
+  if (context === undefined) {
+    throw Error("Cannot use GameContext outside its provider.");
+  }
+
+  return context;
+};
 
 // game context provider
 const GameProvider = ({ children }: any) => {
   const { solution } = useSolution();
   const { isValid } = useDictionary();
+  const { showMessage, hideMessage } = useNotification();
+
   const [status, setStatus] = useState<string | null>(
     localStorage.getItem("status")
   );
@@ -78,6 +79,7 @@ const GameProvider = ({ children }: any) => {
 
         submitGuess(letters);
       } else if (e.key === "Backspace") {
+        hideMessage();
         setLetters(letters.slice(0, -1));
       } else if (/[a-z]/.test(e.key) && letters.length < 5) {
         setLetters(letters + e.key.toLowerCase());
@@ -91,18 +93,19 @@ const GameProvider = ({ children }: any) => {
   // submit and validate guess word
   const submitGuess = (guess: string) => {
     if (!isValid(guess)) {
-      console.log("Word not valid!");
+      showMessage("Not in list!");
       return;
     }
 
+    // block repeating same guess word
     if (guessList.includes(guess)) {
-      console.log("You already tried with this one");
+      showMessage("You already tried with this one");
       return;
     }
 
     if (guess === solution) {
       changeStatus("finished");
-      console.log("You got it right");
+      showMessage("Yay! You got it right");
     }
 
     setActiveRow(activeRow + 1);
@@ -116,8 +119,6 @@ const GameProvider = ({ children }: any) => {
     guessList,
     letters,
     activeRow,
-    changeStatus,
-    addNewGuess,
     handleKeyUp,
   };
 
