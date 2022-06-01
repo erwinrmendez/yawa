@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react";
 interface INotification {
   show: boolean;
   message: string;
-  showMessage: (newMessage: string) => void;
+  showMessage: (newMessage: string, keep?: boolean) => void;
   hideMessage: () => void;
 }
 
@@ -23,9 +23,12 @@ const NotificationProvider = ({ children }: any) => {
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState("");
 
-  const showMessage = (newMessage: string) => {
+  const showMessage = (newMessage: string, keep: boolean = false) => {
     setMessage(newMessage);
     setShow(true);
+
+    // allow keeping message or hiding message automatically
+    if (keep) return;
     setTimeout(() => setShow(false), 2000);
   };
 

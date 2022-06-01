@@ -7,6 +7,7 @@ import {
 } from "react";
 import { useDictionary } from "../hooks/useDictionary";
 import { useSolution } from "../hooks/useSolution";
+import { MAX_ATTEMPS } from "../utils/constants";
 import { useNotification } from "./NotificationContext";
 
 interface IGameContext {
@@ -40,6 +41,9 @@ const GameProvider = ({ children }: any) => {
   const [status, setStatus] = useState<string | null>(
     localStorage.getItem("status")
   );
+  const [result, setResult] = useState<"winner" | "loser" | undefined>(
+    undefined
+  );
   const [guessList, setGuessList] = useState<string[]>([]);
   const [activeRow, setActiveRow] = useState(0);
   const [letters, setLetters] = useState<string>("");
@@ -50,8 +54,21 @@ const GameProvider = ({ children }: any) => {
     if (storedGuessList) {
       setGuessList(storedGuessList.split(","));
       setActiveRow(storedGuessList.split(",").length);
+
+      storedGuessList.includes(solution)
+        ? setResult("winner")
+        : setResult("loser");
     }
-  }, []);
+  }, [solution]);
+
+  // show message when game is finished
+  useEffect(() => {
+    if (result === "winner") {
+      showMessage("Yay! You got it right", true);
+    } else if (result === "loser") {
+      showMessage(solution.toUpperCase(), true);
+    }
+  }, [result, showMessage, solution]);
 
   // change status of game (playing, finished)
   const changeStatus = (newStatus: string) => {
@@ -105,12 +122,17 @@ const GameProvider = ({ children }: any) => {
 
     if (guess === solution) {
       changeStatus("finished");
-      showMessage("Yay! You got it right");
+      setResult("winner");
     }
 
     setActiveRow(activeRow + 1);
     setLetters("");
     addNewGuess(letters);
+
+    if (activeRow + 1 === MAX_ATTEMPS) {
+      changeStatus("finished");
+      setResult("loser");
+    }
   };
 
   // set provided values object for the context
