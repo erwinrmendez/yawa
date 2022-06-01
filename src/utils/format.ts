@@ -30,7 +30,7 @@ export const getStyles = (word: string, solution: string) => {
   for (let i = 0; i < word.length; i++) {
     let ch = word[i];
 
-    if (charObject[ch]) {
+    if (charObject[ch] !== undefined) {
       // when is at the correct position
       if (isCorrectPosition(i)) {
         styles[i] = "bg-wgreen ";
@@ -40,6 +40,7 @@ export const getStyles = (word: string, solution: string) => {
         if (charObject[ch] === 0) {
           for (let j of indexes[ch]) {
             if (isCorrectPosition(j)) continue;
+
             styles[j] = "bg-gray-800 ";
             break;
           }
@@ -63,6 +64,5 @@ export const getStyles = (word: string, solution: string) => {
     indexes[ch] = indexes[ch] ? [i, ...indexes[ch]] : [i];
   }
 
-  // console.log(styles);
   return styles;
 };
