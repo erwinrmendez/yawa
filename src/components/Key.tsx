@@ -29,7 +29,7 @@ const Key: React.FC<IKey> = ({ keyValue, flex }) => {
           return;
         }
 
-        word.split("").some((ch, i) => solution[i] === ch)
+        word.split("").some((ch, i) => solution[i] === ch && keyValue === ch)
           ? setStyle("bg-wgreen")
           : setStyle("bg-wyellow");
       });
