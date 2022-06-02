@@ -1,5 +1,13 @@
 export const WORD_LENGTH = 5;
 export const MAX_ATTEMPS = 6;
+export const SUCCESS_MESSAGES = [
+  "Unbelievable!",
+  "Awesome!",
+  "Great!",
+  "Noooice!",
+  "Good guess.",
+  "Phew!",
+];
 export const KEYS = [
   "q",
   "w",

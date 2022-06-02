@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useDictionary } from "../hooks/useDictionary";
 import { useSolution } from "../hooks/useSolution";
-import { MAX_ATTEMPS } from "../utils/constants";
+import { MAX_ATTEMPS, SUCCESS_MESSAGES } from "../utils/constants";
 import { useNotification } from "./NotificationContext";
 
 interface IGameContext {
@@ -60,10 +60,12 @@ const GameProvider = ({ children }: any) => {
   // show message when game is finished
   useEffect(() => {
     if (result === "winner") {
-      showMessage("Yay! You got it right", true);
+      let i = guessList.length - 1;
+      showMessage(SUCCESS_MESSAGES[i], true);
     } else if (result === "loser") {
       showMessage(solution.toUpperCase(), true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [result, showMessage, solution]);
 
   // change status of game (playing, finished)
