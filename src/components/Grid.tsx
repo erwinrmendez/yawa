@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 // custom hooks, variables and components
 import { useGameContext } from "../contexts/GameContext";
@@ -8,18 +8,25 @@ import Row from "./Row";
 import Toast from "./Toast";
 
 const Grid = () => {
-  const { activeRow, handleKeyUp, letters, guessList } = useGameContext();
+  const { activeRow, handleKeyInput, letters, guessList } = useGameContext();
   const { show, message } = useNotification();
 
+  const onKeyUp = useCallback(
+    (e: KeyboardEvent) => {
+      handleKeyInput(e.key);
+    },
+    [handleKeyInput]
+  );
+
   useEffect(() => {
-    window.addEventListener("keyup", handleKeyUp);
-    return () => window.removeEventListener("keyup", handleKeyUp);
-  }, [handleKeyUp]);
+    window.addEventListener("keyup", onKeyUp);
+    return () => window.removeEventListener("keyup", onKeyUp);
+  }, [onKeyUp]);
 
   return (
     <>
       {show && <Toast message={message} />}
-      <div className="flex flex-col gap-1 mt-8">
+      <div className="flex flex-col gap-1 mt-4">
         {[...Array(MAX_ATTEMPS)].map((_, i) => (
           <Row
             key={i}

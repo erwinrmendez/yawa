@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useDictionary } from "../hooks/useDictionary";
 import { useSolution } from "../hooks/useSolution";
 import { MAX_ATTEMPS } from "../utils/constants";
@@ -15,7 +9,7 @@ interface IGameContext {
   guessList: string[];
   letters: string;
   activeRow: number;
-  handleKeyUp: (e: KeyboardEvent) => void;
+  handleKeyInput: (key: string) => void;
 }
 
 // game context with initial properties
@@ -57,9 +51,11 @@ const GameProvider = ({ children }: any) => {
 
       storedGuessList.includes(solution)
         ? setResult("winner")
-        : setResult("loser");
+        : status === "finished"
+        ? setResult("loser")
+        : setResult(undefined);
     }
-  }, [solution]);
+  }, [solution, status]);
 
   // show message when game is finished
   useEffect(() => {
@@ -84,28 +80,23 @@ const GameProvider = ({ children }: any) => {
   };
 
   // handle keyup event for letters, Enter and Backspace keys
-  const handleKeyUp = useCallback(
-    (e: KeyboardEvent) => {
-      // if game is "finished", ignore key events
-      if (!status || status === "finished") {
-        return;
-      }
+  const handleKeyInput = (key: string) => {
+    // if game is "finished", ignore key events
+    if (!status || status === "finished") {
+      return;
+    }
 
-      if (e.key === "Enter") {
-        if (letters.length < 5) return;
+    if (key === "Enter") {
+      if (letters.length < 5) return;
 
-        submitGuess(letters);
-      } else if (e.key === "Backspace") {
-        hideMessage();
-        setLetters(letters.slice(0, -1));
-      } else if (/[a-z]/.test(e.key) && letters.length < 5) {
-        setLetters(letters + e.key.toLowerCase());
-      }
-    },
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [letters]
-  );
+      submitGuess(letters);
+    } else if (key === "Backspace") {
+      hideMessage();
+      setLetters(letters.slice(0, -1));
+    } else if (/[a-z]/.test(key) && letters.length < 5) {
+      setLetters(letters + key.toLowerCase());
+    }
+  };
 
   // submit and validate guess word
   const submitGuess = (guess: string) => {
@@ -141,7 +132,7 @@ const GameProvider = ({ children }: any) => {
     guessList,
     letters,
     activeRow,
-    handleKeyUp,
+    handleKeyInput,
   };
 
   return (
