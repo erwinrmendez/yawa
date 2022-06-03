@@ -8,7 +8,7 @@ import Row from "./Row";
 import Toast from "./Toast";
 
 const Grid = () => {
-  const { activeRow, handleKeyInput, letters, guessList } = useGameContext();
+  const { handleKeyInput } = useGameContext();
   const { show, message } = useNotification();
 
   const onKeyUp = useCallback(
@@ -28,11 +28,7 @@ const Grid = () => {
       {show && <Toast message={message} />}
       <div className="flex flex-col gap-1 mt-4">
         {[...Array(MAX_ATTEMPS)].map((_, i) => (
-          <Row
-            key={i}
-            letters={activeRow === i ? letters : guessList[i]}
-            rowIndex={i}
-          />
+          <Row key={i} rowIndex={i} />
         ))}
       </div>
     </>

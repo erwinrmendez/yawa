@@ -8,7 +8,6 @@ interface IGameContext {
   status: string | null;
   guessList: string[];
   letters: string;
-  activeRow: number;
   handleKeyInput: (key: string) => void;
 }
 
@@ -39,7 +38,6 @@ const GameProvider = ({ children }: any) => {
     undefined
   );
   const [guessList, setGuessList] = useState<string[]>([]);
-  const [activeRow, setActiveRow] = useState(0);
   const [letters, setLetters] = useState<string>("");
 
   // setting initial values from local storage
@@ -47,7 +45,6 @@ const GameProvider = ({ children }: any) => {
     const storedGuessList = localStorage.getItem("currentGuesses");
     if (storedGuessList) {
       setGuessList(storedGuessList.split(","));
-      setActiveRow(storedGuessList.split(",").length);
 
       storedGuessList.includes(solution)
         ? setResult("winner")
@@ -118,11 +115,10 @@ const GameProvider = ({ children }: any) => {
       setResult("winner");
     }
 
-    setActiveRow(activeRow + 1);
     setLetters("");
     addNewGuess(letters);
 
-    if (activeRow + 1 === MAX_ATTEMPS) {
+    if (guessList.length + 1 === MAX_ATTEMPS) {
       changeStatus("finished");
       setResult("loser");
     }
@@ -133,7 +129,6 @@ const GameProvider = ({ children }: any) => {
     status,
     guessList,
     letters,
-    activeRow,
     handleKeyInput,
   };
 

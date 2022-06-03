@@ -7,29 +7,29 @@ import { getStyles } from "../utils/format";
 import Tile from "./Tile";
 
 interface IRow {
-  letters: string;
   rowIndex: number;
 }
 
-const Row: React.FC<IRow> = ({ letters = "", rowIndex }) => {
+const Row: React.FC<IRow> = ({ rowIndex }) => {
   const [styles, setStyles] = useState<{ [key: number]: string } | null>(null);
-  const { guessList, activeRow } = useGameContext();
+  const { guessList, letters } = useGameContext();
   const { solution } = useSolution();
-  const nChars = letters.length;
+  let activeRow = guessList.length;
+  let rowLetters = activeRow === rowIndex ? letters : guessList[rowIndex];
+  let nChars = rowLetters?.length || 0;
 
   useEffect(() => {
     if (rowIndex >= activeRow) return;
 
     setStyles(getStyles(guessList[rowIndex], solution));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeRow]);
+  }, [activeRow, guessList, rowIndex, solution]);
 
   return (
     <div className="flex gap-1">
       {[...Array(WORD_LENGTH)].map((_, i) => (
         <Tile
           key={i}
-          char={i >= nChars ? "" : letters[i]}
+          char={i >= nChars ? "" : rowLetters[i]}
           background={styles ? styles[i] : ""}
         />
       ))}
