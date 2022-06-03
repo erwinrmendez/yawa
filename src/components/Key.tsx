@@ -12,37 +12,35 @@ const Key: React.FC<IKey> = ({ keyValue, flex }) => {
   const { solution } = useSolution();
 
   // styles for keyboard
-  const [style, setStyle] = useState("");
+  const [background, setBackground] = useState("");
   const text = keyValue === "Backspace" ? "←" : keyValue; // change text in backspace for symbol
 
   // on guesslist change, apply styles to keys
   useEffect(() => {
     if (keyValue === "Enter" || keyValue === "Backspace") return;
 
-    if (style === "bg-gray-800" || style === "bg-wgreen") return;
+    if (background === "bg-gray-800" || background === "bg-wgreen") return;
 
     guessList
       .filter((word) => word.includes(keyValue))
       .forEach((word) => {
         if (!solution.includes(keyValue)) {
-          setStyle("bg-gray-800");
+          setBackground("bg-gray-800");
           return;
         }
 
         word.split("").some((ch, i) => solution[i] === ch && keyValue === ch)
-          ? setStyle("bg-wgreen")
-          : setStyle("bg-wyellow");
+          ? setBackground("bg-wgreen")
+          : setBackground("bg-wyellow");
       });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [guessList]);
+  }, [guessList, keyValue, solution, background]);
 
   return (
     <span
       onClick={() => handleKeyInput(keyValue)}
-      className={`cursor-pointer flex items-center justify-center uppercase bg-gray-600 rounded-[4px] shadow-lg w-full h-14 flex-1 ${
+      className={`cursor-pointer flex items-center justify-center uppercase rounded-[4px] shadow-lg w-full h-14 flex-1 ${
         flex ? flex : ""
-      } ${style}`}
+      } ${background ? background : "bg-gray-600"}`}
     >
       {text}
     </span>
