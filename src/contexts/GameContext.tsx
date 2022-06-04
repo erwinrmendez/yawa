@@ -40,39 +40,29 @@ const GameProvider = ({ children }: any) => {
     hideMessage,
   } = useNotification();
 
-  const [status, setStatus] = useState<string | null>(
-    localStorage.getItem("status")
+  // local state
+  let storedStatus = localStorage.getItem("status");
+  let storedGuessList = localStorage.getItem("currentGuesses");
+  const [status, setStatus] = useState<string | null>(storedStatus);
+  const [guessList, setGuessList] = useState<string[]>(
+    storedGuessList ? storedGuessList.split(",") : []
   );
-  const [result, setResult] = useState<"winner" | "loser" | undefined>(
-    undefined
-  );
-  const [guessList, setGuessList] = useState<string[]>([]);
   const [letters, setLetters] = useState<string>("");
 
-  // setting initial values from local storage
+  // show success message when completed correctly or solution if not.
   useEffect(() => {
-    const storedGuessList = localStorage.getItem("currentGuesses");
-    if (storedGuessList) {
-      setGuessList(storedGuessList.split(","));
+    if (status !== "finished") return;
 
-      storedGuessList.includes(solution)
-        ? setResult("winner")
-        : status === "finished"
-        ? setResult("loser")
-        : setResult(undefined);
-    }
-  }, [solution, status]);
-
-  // show message when game is finished
-  useEffect(() => {
-    if (result === "winner") {
+    // if the guess list includes the solution, show success message, else show solution
+    if (guessList.includes(solution)) {
       let i = guessList.length - 1;
       showMessage(SUCCESS_MESSAGES[i], true);
-    } else if (result === "loser") {
+    } else {
       showMessage(solution.toUpperCase(), true);
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result, showMessage, solution]);
+  }, [status]);
 
   // change status of game (playing, finished)
   const changeStatus = (newStatus: string) => {
@@ -119,18 +109,12 @@ const GameProvider = ({ children }: any) => {
       return;
     }
 
-    if (guess === solution) {
+    if (guess === solution || guessList.length + 1 === MAX_ATTEMPS) {
       changeStatus("finished");
-      setResult("winner");
     }
 
     setLetters("");
     addNewGuess(letters);
-
-    if (guessList.length + 1 === MAX_ATTEMPS) {
-      changeStatus("finished");
-      setResult("loser");
-    }
   };
 
   // set provided values object for the context
