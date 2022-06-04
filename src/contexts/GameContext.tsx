@@ -1,13 +1,17 @@
 import { createContext, useContext, useEffect, useState } from "react";
+
+// custom hooks and contants
 import { useDictionary } from "../hooks/useDictionary";
+import { useNotification } from "../hooks/useNotification";
 import { useSolution } from "../hooks/useSolution";
 import { MAX_ATTEMPS, SUCCESS_MESSAGES } from "../utils/constants";
-import { useNotification } from "./NotificationContext";
 
 interface IGameContext {
   status: string | null;
   guessList: string[];
   letters: string;
+  isMessageVisible: boolean;
+  message: string;
   handleKeyInput: (key: string) => void;
 }
 
@@ -29,7 +33,12 @@ export const useGameContext = () => {
 const GameProvider = ({ children }: any) => {
   const { solution } = useSolution();
   const { isValid } = useDictionary();
-  const { showMessage, hideMessage } = useNotification();
+  const {
+    isVisible: isMessageVisible,
+    message,
+    showMessage,
+    hideMessage,
+  } = useNotification();
 
   const [status, setStatus] = useState<string | null>(
     localStorage.getItem("status")
@@ -130,6 +139,8 @@ const GameProvider = ({ children }: any) => {
     guessList,
     letters,
     handleKeyInput,
+    isMessageVisible,
+    message,
   };
 
   return (

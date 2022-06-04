@@ -2,14 +2,12 @@ import { useCallback, useEffect } from "react";
 
 // custom hooks, variables and components
 import { useGameContext } from "../contexts/GameContext";
-import { useNotification } from "../contexts/NotificationContext";
 import { MAX_ATTEMPS } from "../utils/constants";
 import Row from "./Row";
 import Toast from "./Toast";
 
 const Grid = () => {
-  const { handleKeyInput } = useGameContext();
-  const { show, message } = useNotification();
+  const { handleKeyInput, isMessageVisible, message } = useGameContext();
 
   const onKeyUp = useCallback(
     (e: KeyboardEvent) => {
@@ -25,7 +23,7 @@ const Grid = () => {
 
   return (
     <>
-      {show && <Toast message={message} />}
+      {isMessageVisible && <Toast message={message} />}
       <div className="flex flex-col gap-1 mt-4">
         {[...Array(MAX_ATTEMPS)].map((_, i) => (
           <Row key={i} rowIndex={i} />
