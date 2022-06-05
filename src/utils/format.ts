@@ -33,7 +33,7 @@ export const getStyles = (word: string, solution: string) => {
     if (charObject[ch] !== undefined) {
       // when is at the correct position
       if (isCorrectPosition(i)) {
-        styles[i] = "bg-wgreen ";
+        styles[i] = "bg-wgreen";
 
         // checks to set back to gray previous occurrences where the character
         // is not at the correct position
@@ -41,24 +41,24 @@ export const getStyles = (word: string, solution: string) => {
           for (let j of indexes[ch]) {
             if (isCorrectPosition(j)) continue;
 
-            styles[j] = "bg-gray-800 ";
+            styles[j] = "bg-gray-800";
             break;
           }
         }
 
         // when the character is included and there are occurrences left
       } else if (charObject[ch] > 0) {
-        styles[i] = "bg-wyellow ";
+        styles[i] = "bg-wyellow";
 
         // when the character is included but was already accounted for
       } else {
-        styles[i] = "bg-gray-800 ";
+        styles[i] = "bg-gray-800";
       }
 
       // reduce occurrences (keep >= 0)
       charObject[ch] = charObject[ch] === 0 ? 0 : charObject[ch] - 1;
     } else {
-      styles[i] = "bg-gray-800 ";
+      styles[i] = "bg-gray-800";
     }
 
     indexes[ch] = indexes[ch] ? [i, ...indexes[ch]] : [i];
