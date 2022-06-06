@@ -91,7 +91,7 @@ const GameProvider = ({ children }: any) => {
     } else if (key === "Backspace") {
       hideMessage();
       setLetters(letters.slice(0, -1));
-    } else if (/[a-z]/.test(key) && letters.length < 5) {
+    } else if (/[a-zA-Z]{1}$/.test(key) && letters.length < 5) {
       setLetters(letters + key.toLowerCase());
     }
   };
