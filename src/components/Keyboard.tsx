@@ -3,7 +3,7 @@ import Key from "./Key";
 
 const Keyboard = () => {
   return (
-    <div className="flex flex-col w-full max-w-[500px] gap-1.5 mt-4 select-none">
+    <div className="flex flex-col w-full max-w-[500px] gap-1.5 mt-6 select-none">
       <div className="flex justify-center gap-1.5">
         {KEYS.slice(0, 10).map((value) => (
           <Key key={value} keyValue={value} />

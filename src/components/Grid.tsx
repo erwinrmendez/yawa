@@ -24,7 +24,7 @@ const Grid = () => {
   return (
     <>
       {isMessageVisible && <Toast message={message} />}
-      <div className="flex flex-col gap-1 mt-4">
+      <div className="flex flex-col gap-1 mt-6">
         {[...Array(MAX_ATTEMPS)].map((_, i) => (
           <Row key={i} rowIndex={i} />
         ))}
