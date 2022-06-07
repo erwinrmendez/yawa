@@ -11,10 +11,14 @@ export const useNotification = () => {
 
   const showMessage = (newMessage: string, keep: boolean = false) => {
     setMessage(newMessage);
-    setIsVisible(true);
 
     // allow keeping message or hiding message automatically
-    if (keep) return;
+    if (keep) {
+      setTimeout(() => setIsVisible(true), 2000);
+      return;
+    }
+
+    setIsVisible(true);
     setTimeout(() => setIsVisible(false), 2000);
   };
 

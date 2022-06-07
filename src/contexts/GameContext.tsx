@@ -1,10 +1,16 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 // custom hooks and contants
 import { useDictionary } from "../hooks/useDictionary";
 import { useNotification } from "../hooks/useNotification";
 import { useSolution } from "../hooks/useSolution";
-import { MAX_ATTEMPS, SUCCESS_MESSAGES } from "../utils/constants";
+import { KEYS, MAX_ATTEMPS, SUCCESS_MESSAGES } from "../utils/constants";
 
 interface IGameContext {
   status: string | null;
@@ -12,7 +18,9 @@ interface IGameContext {
   letters: string;
   isMessageVisible: boolean;
   message: string;
+  animation: string;
   handleKeyInput: (key: string) => void;
+  resetAnimation: () => void;
 }
 
 // game context with initial properties
@@ -48,6 +56,7 @@ const GameProvider = ({ children }: any) => {
     storedGuessList ? storedGuessList.split(",") : []
   );
   const [letters, setLetters] = useState<string>("");
+  const [animation, setAnimation] = useState("");
 
   // show success message when completed correctly or solution if not.
   useEffect(() => {
@@ -91,7 +100,7 @@ const GameProvider = ({ children }: any) => {
     } else if (key === "Backspace") {
       hideMessage();
       setLetters(letters.slice(0, -1));
-    } else if (/[a-zA-Z]{1}$/.test(key) && letters.length < 5) {
+    } else if (KEYS.includes(key) && letters.length < 5) {
       setLetters(letters + key.toLowerCase());
     }
   };
@@ -100,12 +109,14 @@ const GameProvider = ({ children }: any) => {
   const submitGuess = (guess: string) => {
     if (!isValid(guess)) {
       showMessage("Not in list!");
+      setAnimation("shake");
       return;
     }
 
     // block repeating same guess word
     if (guessList.includes(guess)) {
       showMessage("You already tried with this one");
+      setAnimation("shake");
       return;
     }
 
@@ -115,7 +126,13 @@ const GameProvider = ({ children }: any) => {
 
     setLetters("");
     addNewGuess(letters);
+    setAnimation("reveal");
   };
+
+  // reset animation
+  const resetAnimation = useCallback(() => {
+    setAnimation("");
+  }, []);
 
   // set provided values object for the context
   const provided: IGameContext = {
@@ -125,6 +142,8 @@ const GameProvider = ({ children }: any) => {
     handleKeyInput,
     isMessageVisible,
     message,
+    animation,
+    resetAnimation,
   };
 
   return (

@@ -38,7 +38,7 @@ const Key: React.FC<IKey> = ({ keyValue, flex }) => {
   return (
     <span
       onClick={() => handleKeyInput(keyValue)}
-      className={`cursor-pointer flex items-center justify-center uppercase rounded-[4px] shadow-lg w-full h-14 flex-1 ${
+      className={`transition-colors ease-in duration-200 delay-[2000ms] cursor-pointer flex items-center justify-center uppercase rounded-[4px] shadow-lg w-full h-14 flex-1 ${
         flex ? flex : ""
       } ${background ? background : "bg-gray-600"}`}
     >
