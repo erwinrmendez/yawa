@@ -5,7 +5,7 @@
 import { useState } from "react";
 import { compareAsc, differenceInDays, format, toDate } from "date-fns";
 
-import * as solutionsList from "../assets/words.json";
+import solutionsList from "../assets/words.json";
 
 export const useSolution = () => {
   // get solution from local storage to set state
