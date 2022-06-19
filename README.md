@@ -4,6 +4,8 @@ Remake of the [Wordle Game App](https://www.nytimes.com/games/wordle/index.html)
 
 ![](screenshot.png)
 
+Try the live version [here](https://yet-another-wordle-app.web.app/).
+
 ## Features
 
 - Game state saved to Local Storage.
