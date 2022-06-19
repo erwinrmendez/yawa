@@ -7,7 +7,7 @@ interface ITile {
   char: string;
   background: string;
   initialAnimation: string;
-  revealTile: boolean;
+  rowIndex: number;
 }
 
 const Tile: React.FC<ITile> = ({
@@ -15,28 +15,28 @@ const Tile: React.FC<ITile> = ({
   char,
   background,
   initialAnimation,
-  revealTile,
+  rowIndex,
 }) => {
   // get values from custom hooks
   const { animate, delay, reveal, bounce } = useAnimation(
     initialAnimation,
     100
   );
-  const { animation } = useGameContext();
+  const { animation, activeRow } = useGameContext();
 
   // apply reveal animation (flip)
   useEffect(() => {
-    if (animation === "reveal" && revealTile) {
+    if (animation === "reveal" && rowIndex === activeRow - 1) {
       reveal(400, 2500);
     }
-  }, [animation, reveal, revealTile]);
+  }, [activeRow, animation, reveal, rowIndex]);
 
   // apply bounce animation on letter input
   useEffect(() => {
-    if (!revealTile && char !== "") {
+    if (activeRow === rowIndex && char !== "") {
       bounce();
     }
-  }, [bounce, char, revealTile]);
+  }, [activeRow, bounce, char, rowIndex]);
 
   // concatenate class names to single string
   let tileStyles = `${background} ${animate} ${

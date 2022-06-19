@@ -14,14 +14,14 @@ interface IRow {
 const Row: React.FC<IRow> = ({ rowIndex }) => {
   // get values from custom hooks
   const { solution } = useSolution();
-  const { guessList, letters, animation, resetAnimation } = useGameContext();
+  const { guessList, letters, animation, resetAnimation, activeRow } =
+    useGameContext();
   const { animate, shake } = useAnimation("animate-none", 0);
 
   // local state and variables
   const [styles, setStyles] = useState<{ [key: number]: string } | null>(null);
-  let activeRow = guessList.length;
+  // let activeRow = guessList.length;
   let isActiveRow = activeRow === rowIndex;
-  let reveal = rowIndex < activeRow;
   let rowLetters = isActiveRow ? letters : guessList[rowIndex];
   let nChars = rowLetters?.length || 0;
 
@@ -41,15 +41,17 @@ const Row: React.FC<IRow> = ({ rowIndex }) => {
   }, [activeRow, guessList, rowIndex, solution]);
 
   return (
-    <div className={`${isActiveRow && animate} flex gap-1`}>
+    <div className={`${isActiveRow ? animate : ""} flex gap-1`}>
       {[...Array(WORD_LENGTH)].map((_, i) => (
         <Tile
           key={i}
           index={i}
           char={i >= nChars ? "" : rowLetters[i]}
           background={styles ? styles[i] : ""}
-          revealTile={reveal}
-          initialAnimation={reveal ? "animate-flip" : "animate-none"} // if reveal, load with flip animation
+          rowIndex={rowIndex}
+          initialAnimation={
+            rowIndex < activeRow ? "animate-flip" : "animate-none"
+          } // if reveal, load with flip animation
         />
       ))}
     </div>

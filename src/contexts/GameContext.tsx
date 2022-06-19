@@ -16,6 +16,7 @@ interface IGameContext {
   status: string | null;
   guessList: string[];
   letters: string;
+  activeRow: number;
   isMessageVisible: boolean;
   message: string;
   animation: string;
@@ -57,6 +58,7 @@ const GameProvider = ({ children }: any) => {
   );
   const [letters, setLetters] = useState<string>("");
   const [animation, setAnimation] = useState("");
+  let activeRow = guessList.length;
 
   // show success message when completed correctly or solution if not.
   useEffect(() => {
@@ -139,6 +141,7 @@ const GameProvider = ({ children }: any) => {
     status,
     guessList,
     letters,
+    activeRow,
     handleKeyInput,
     isMessageVisible,
     message,
